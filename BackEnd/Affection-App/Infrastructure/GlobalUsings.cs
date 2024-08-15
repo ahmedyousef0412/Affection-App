@@ -1,0 +1,17 @@
+﻿global using Affection.Domain.Entities;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore;
+global using Affection.Application.Interfaces;
+global using Affection.Contract.Authentication;
+global using Affection.Domain.Abstraction;
+global using Affection.Domain.Errors;
+global using Affection.Infrastructure.Persistence;
+global using Mapster;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.WebUtilities;
+global using Microsoft.Extensions.Logging;
+global using System.Text;
+global using Affection.Infrastructure.Implementation;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
