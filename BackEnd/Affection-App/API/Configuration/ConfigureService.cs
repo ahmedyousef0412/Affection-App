@@ -9,20 +9,22 @@ public static class ConfigureService
     {
         services.AddControllers();
 
-        services.AddSwaggerConfig();
+        services.AddSwaggerConfig().AddMapsterConfig();
+        services.ApplyCORS(configuration);
         services.AddSingleton<DefaultUsers>();
 
         services.AddConnectionString(configuration);
 
-        services.AddMapsterConfig();
 
         services.AddContract();
 
         services.Configure<DefaultUser>(configuration.GetSection(nameof(DefaultUser)));
 
         services.AddInfrastructureServices(configuration);
-        services.AddIdentityService();
 
+
+        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddProblemDetails();
 
         return services;
     }
@@ -41,29 +43,7 @@ public static class ConfigureService
     }
 
 
-    private static IServiceCollection AddIdentityService(this IServiceCollection services)
-    {
-
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-           .AddEntityFrameworkStores<ApplicationDbContext>()
-           .AddDefaultTokenProviders();
-
-
-        //Password
-
-        services.Configure<IdentityOptions>(options =>
-        {
-
-            options.Password.RequiredLength = 8;
-
-            options.User.RequireUniqueEmail = true;
-
-            //options.Lockout.MaxFailedAccessAttempts = 3;
-            //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(4);
-        });
-
-        return services;
-    }
+   
 
     private static IServiceCollection AddSwaggerConfig(this IServiceCollection services)
     {
@@ -84,6 +64,19 @@ public static class ConfigureService
 
         return services;
     }
+    private static IServiceCollection ApplyCORS(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddCors(options =>
+                   options.AddDefaultPolicy
+                   (builder =>
+                    builder.AllowAnyHeader().AllowAnyMethod()
+                   .WithOrigins(configuration.GetSection("AllowedOrigins").Get<string[]>()!)
+                    )
+        );
+
+        return services;
+    }
+   
 }
 
 

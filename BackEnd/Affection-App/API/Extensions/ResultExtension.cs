@@ -1,6 +1,4 @@
-﻿using Affection.Domain.Abstraction;
-using Microsoft.AspNetCore.Mvc;
-
+﻿
 namespace Affection.API.Extensions;
 
 public static class ResultExtension
@@ -11,8 +9,11 @@ public static class ResultExtension
             throw new InvalidOperationException("Can't convert success result to a problem..");
 
         var problem = Results.Problem(statusCode: result.Error.StautsCode);
-        var problemDetails = problem.GetType().GetProperty(nameof(ProblemDetails))!.GetValue(problem) as ProblemDetails;
 
+        var problemDetails = problem.GetType()
+                                         .GetProperty(nameof(ProblemDetails))!
+                                         .GetValue(problem) as ProblemDetails;
+         
         problemDetails!.Extensions = new Dictionary<string, object?>
         {
             {
