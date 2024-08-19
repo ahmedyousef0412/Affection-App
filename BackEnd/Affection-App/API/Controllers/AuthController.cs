@@ -1,7 +1,9 @@
 ﻿
+
 namespace Affection.API.Controllers;
 [Route("[controller]")]
 [ApiController]
+
 public class AuthController(IAuthService authService) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
@@ -17,8 +19,17 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpGet("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
     {
-        var result = await _authService.LoginAsync(request, cancellationToken);
+       
+        var result = await _authService.GetTokenAsync(request, cancellationToken);
 
         return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
     }
+    [HttpGet("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _authService.GetRefreshTokenAsync(request.Token,request.RefreshToken, cancellationToken);
+
+        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+    }
+
 }

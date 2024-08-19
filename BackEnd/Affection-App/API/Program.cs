@@ -1,14 +1,7 @@
-using Affection.API.Configuration;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-
-
-
 
 builder.Services.AffectionApiDependeciesService(builder.Configuration);
 
@@ -25,6 +18,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors();
+app.UseAuthentication();
 app.UseAuthorization();
 
 #region Seed Roles and Users
@@ -52,5 +47,7 @@ await defaultUsers.SeedUsersAsync(userManager);
 
 
 app.MapControllers();
+
+app.UseExceptionHandler();
 
 app.Run();

@@ -13,3 +13,11 @@ global using Affection.Application.Interfaces;
 global using Affection.Contract.Authentication;
 global using Microsoft.AspNetCore.Mvc;
 global using Affection.Infrastructure.Configuration;
+global using Microsoft.AspNetCore.Diagnostics;
+global using Affection.API.Configuration;
+global using Affection.Domain.Abstraction;
+global using Affection.API.Errors;
+
+
+
+
