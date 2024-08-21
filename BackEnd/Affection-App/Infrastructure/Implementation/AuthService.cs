@@ -1,5 +1,4 @@
 ﻿
-
 namespace Affection.Infrastructure.Implementation;
 
 internal class AuthService
@@ -171,6 +170,9 @@ internal class AuthService
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, AppRoles.Member);
+
+            await NotifyAllUsersAsync(user);
+
             return Result.Success();
 
         }
@@ -180,6 +182,7 @@ internal class AuthService
         return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
 
+   
 
     public async Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmail request)
     {
@@ -297,7 +300,32 @@ internal class AuthService
         );
         await _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "✅ Affection App : Change Password", emailBody);
     }
-   
+
+    private async Task NotifyAllUsersAsync(ApplicationUser newUser)
+    {
+        var users = await _userManager.Users
+             .Where(u => u.EmailConfirmed)
+             .ToListAsync();
+
+        foreach (var user in users)
+        {
+            if (user.Id != newUser.Id)
+            {
+                var emailBody = EmailBodyBuilder.GenerateEmailBody
+                    (
+                       "NewUserNotification",
+                      new Dictionary<string, string>
+                      {
+                                 { "{{NewUserName}}", newUser.UserName! },
+                                 { "{{CurrentYear}}", DateTime.Now.Year.ToString() }
+                      }
+                    );
+
+                await _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "🥳🎉🎊 New User Joined", emailBody);
+            }
+
+        }
+    }
     private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user )
     {
         var photoUrl = user.Photos?.FirstOrDefault(u => u.IsMain)?.Url;
