@@ -1,5 +1,4 @@
 ﻿
-
 namespace Affection.Infrastructure.Implementation;
 
 internal class AuthService
@@ -314,8 +313,8 @@ internal class AuthService
             {
                 var emailBody = EmailBodyBuilder.GenerateEmailBody
                     (
-                    "NewUserNotification",
-              new Dictionary<string, string>
+                       "NewUserNotification",
+                      new Dictionary<string, string>
                       {
                                  { "{{NewUserName}}", newUser.UserName! },
                                  { "{{CurrentYear}}", DateTime.Now.Year.ToString() }
