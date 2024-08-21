@@ -18,24 +18,22 @@ public class RegisterRequestValidator:AbstractValidator<RegisterRequest>
         RuleFor(x => x.Password)
            .NotEmpty()
            .Matches(RegexPatterns.Password)
-          .WithMessage("Password should be at least 8 digits and should contains Lowercase, NonAlphanumeric and Uppercase");
-
+           .WithMessage("Password should be at least 8 digits and should contains Lowercase, NonAlphanumeric and Uppercase");
 
 
         RuleFor(x => x.ConfirmPassword)
            .NotEmpty()
            .Equal(x => x.Password)
-           .WithMessage("Confirm Password must match the Password.");
+           .WithMessage("Confirm Password must match the password.");
 
-        RuleFor(u => u.Country)
-           .NotEmpty();
+        RuleFor(u => u.Country).NotEmpty();
 
+        RuleFor(u => u.City).NotEmpty();
 
-        RuleFor(u => u.City)
-              .NotEmpty();
         RuleFor(u => u.KnowAs)
         .NotEmpty()
         .Length(5, 15);
+
 
         RuleFor(u => u.DateOfBirth)
           .NotEmpty()
@@ -59,7 +57,7 @@ public class RegisterRequestValidator:AbstractValidator<RegisterRequest>
 
     private bool BeAValidDate(DateTime dateOfBirth)
     {
-        return dateOfBirth != default(DateTime); // 1996 12 15
+        return dateOfBirth != default; // 1996 12 15
     }
 
     private bool BeAtLeast18YearsOld(DateTime dateOfBirth)

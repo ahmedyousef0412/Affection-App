@@ -2,20 +2,23 @@
 
 namespace Affection.Infrastructure.Implementation;
 
-internal class AuthService(UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager
-        ,IJWTProvider jwt
-       ,IHttpContextAccessor httpContext
-     
-        , ILogger<AuthService> logger) : IAuthService
+internal class AuthService
+    (
+         UserManager<ApplicationUser> userManager,
+         SignInManager<ApplicationUser> signInManager
+         , IJWTProvider jwt
+         , IHttpContextAccessor httpContext
+         , ILogger<AuthService> logger,
+         IEmailSender emailSender
+    ) : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
     private readonly IJWTProvider _jwt = jwt;
     private readonly IHttpContextAccessor _httpContext = httpContext;
     private readonly ILogger<AuthService> _logger = logger;
+    private readonly IEmailSender _emailSender = emailSender;
     private readonly int _refreshTokenExpiryDays = 14;
-  
 
     public async Task<Result> RgisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
@@ -36,6 +39,9 @@ internal class AuthService(UserManager<ApplicationUser> userManager,
 
             _logger.LogInformation("Confirmation code : {code}", code);
 
+
+            await SendConfirmationEmail(user, code);
+
             return Result.Success();
         }
 
@@ -44,6 +50,7 @@ internal class AuthService(UserManager<ApplicationUser> userManager,
 
         return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
+
     public async Task<Result<AuthResponse>> GetTokenAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
 
@@ -53,7 +60,7 @@ internal class AuthService(UserManager<ApplicationUser> userManager,
         if (user is null)
             return Result.Failure<AuthResponse>(UserError.InvalidCredentials);
 
-        if(user.IsRestricted)
+        if (user.IsRestricted)
             return Result.Failure<AuthResponse>(UserError.RestrictedUser);
 
         var result = await _signInManager.PasswordSignInAsync(user, request.Password, false, true);
@@ -62,16 +69,16 @@ internal class AuthService(UserManager<ApplicationUser> userManager,
         {
             //Generate Token
             var response = await GenerateAuthResponseAsync(user);
-            
+
             return Result.Success(response);
         }
 
 
         var error = result.IsNotAllowed
-            ? UserError.EmailNotConfirmed
-            : result.IsLockedOut
-            ? UserError.RestrictedUser
-            : UserError.InvalidCredentials;
+                                ? UserError.EmailNotConfirmed
+                                : result.IsLockedOut
+                                ? UserError.LockedUser
+                                : UserError.InvalidCredentials;
 
         return Result.Failure<AuthResponse>(error);
     }
@@ -83,13 +90,13 @@ internal class AuthService(UserManager<ApplicationUser> userManager,
         if (userId is null)
             return Result.Failure<AuthResponse>(UserError.InvalidJwtToken);
 
-        var user = await _userManager.FindByIdAsync(userId);    
+        var user = await _userManager.FindByIdAsync(userId);
 
-        if(user is null)
+        if (user is null)
             return Result.Failure<AuthResponse>(UserError.InvalidJwtToken);
 
 
-        if(user.IsRestricted)
+        if (user.IsRestricted)
             return Result.Failure<AuthResponse>(UserError.RestrictedUser);
 
 
@@ -124,7 +131,7 @@ internal class AuthService(UserManager<ApplicationUser> userManager,
 
         await _userManager.UpdateAsync(user);
 
-        var response =  new AuthResponse(user.Id, user.UserName, user.Email, user.KnowAs, user.Country, user.City, user.Gender.ToString(), user.DateOfBirth, newToken, expiresOn, newRefreshToken, refreshTokenExpiresOn,photoUrl);
+        var response = new AuthResponse(user.Id, user.UserName, user.Email, user.KnowAs, user.Country, user.City, user.Gender.ToString(), user.DateOfBirth, newToken, expiresOn, newRefreshToken, refreshTokenExpiresOn, photoUrl);
 
 
         return Result.Success(response);
@@ -132,17 +139,165 @@ internal class AuthService(UserManager<ApplicationUser> userManager,
 
     }
 
-    //ConfirmEmailAsync
 
-    //ResendConfirmationEmailAsync
+    public async Task<Result> ConfirmEmailAsync(ConfirmEmailRequest request)
+    {
 
-    //SendResetPasswordCodeAsync
+        var user = await _userManager.FindByIdAsync(request.UserId);
 
-    //ForgetPasswordAsync
+        if (user is null)
+            return Result.Failure(UserError.InvalidCode);
 
-    
+
+        if (user.EmailConfirmed)
+            return Result.Failure(UserError.DuplicatedConfirmedEmail);
+
+        var code = request.Code;
+
+        try
+        {
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+        }
+        catch (FormatException)
+        {
+
+            return Result.Failure(UserError.InvalidCode);
+
+        }
+
+        var result = await _userManager.ConfirmEmailAsync(user, code);
+
+        if (result.Succeeded)
+        {
+            await _userManager.AddToRoleAsync(user, AppRoles.Member);
+            return Result.Success();
+
+        }
+
+        var error = result.Errors.First();
+
+        return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+    }
 
 
+    public async Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmail request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user is null)
+            return Result.Success();
+
+        if (user.EmailConfirmed)
+            return Result.Failure(UserError.DuplicatedConfirmedEmail);
+
+        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        _logger.LogInformation("Confirmation code : {code}", code);
+
+
+        await SendConfirmationEmail(user, code);
+
+        return Result.Success();
+    }
+
+
+    public async Task<Result> SendResetPasswordCodeAsync(ForgetPasswordRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user is null)
+            return Result.Success();
+
+        if(!user.EmailConfirmed)
+            return Result.Failure(UserError.EmailNotConfirmed);
+
+
+        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        _logger.LogInformation("Reset code : {code}", code);
+
+
+        await SendResetPasswordEmail(user, code);
+
+        return Result.Success();
+
+    }
+
+
+    public async Task<Result> ResetPasswordAsync(ResetPasswordRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        if (user is null || !user.EmailConfirmed)
+            return Result.Failure(UserError.InvalidCode);
+
+        IdentityResult result;
+
+        try
+        {
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+
+            result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
+
+
+        }
+        catch (FormatException)
+        {
+
+            result = IdentityResult.Failed(_userManager.ErrorDescriber.InvalidToken());
+
+        }
+
+        if (result.Succeeded)
+            return Result.Success();
+        
+
+
+        var error = result.Errors.First();
+
+        return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status401Unauthorized));
+    }
+
+
+    private async Task SendConfirmationEmail(ApplicationUser user ,string code)
+    {
+
+        var origin = _httpContext.HttpContext?.Request.Headers.Origin;
+
+        var emailBody = EmailBodyBuilder.GenerateEmailBody("EmailVerification",
+
+            new Dictionary<string, string>
+            {
+                    { "[User's Name]", user.UserName!},
+                    { "{{Verification Link}}",$"{origin}/auth/confirm-email?userId={user.Id}&code={code}"},
+                    { "{{CurrentYear}}", DateTime.Now.Year.ToString()},
+            }
+        );
+        await _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "✅ Affection App : Email Confirmation", emailBody);
+
+
+    }
+
+
+    private async Task SendResetPasswordEmail(ApplicationUser user, string code)
+    {
+        var origin = _httpContext.HttpContext?.Request.Headers.Origin;
+
+        var emailBody = EmailBodyBuilder.GenerateEmailBody("ForgetPassword",
+
+            new Dictionary<string, string>
+            {
+                    { "{{UserName}}", user.UserName!},
+                    { "{{ResetLink}}",$"{origin}/auth/forget-password?email={user.Email}&code={code}"},
+                    { "{{CurrentYear}}", DateTime.Now.Year.ToString()},
+            }
+        );
+        await _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "✅ Affection App : Change Password", emailBody);
+    }
+   
     private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user )
     {
         var photoUrl = user.Photos?.FirstOrDefault(u => u.IsMain)?.Url;

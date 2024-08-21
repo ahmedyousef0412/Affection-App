@@ -9,9 +9,9 @@ namespace Affection.API.Controllers;
 public class MembersController : ControllerBase
 {
 
-    [HttpGet("")]
-    public async Task<IActionResult> GetAll()
-    {
-        return Ok();
-    }
+    //[HttpGet("")]
+    //public async Task<IActionResult> GetAll()
+    //{
+    //    return Ok();
+    //}
 }

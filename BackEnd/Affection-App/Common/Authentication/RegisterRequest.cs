@@ -1,5 +1,4 @@
 ﻿
-
 namespace Affection.Contract.Authentication;
 public record  RegisterRequest
 (
