@@ -1,7 +1,4 @@
 ﻿
-
-using Microsoft.AspNetCore.Identity.UI.Services;
-
 namespace Affection.Infrastructure.Configuration;
 public static class ConfigureService
 {
@@ -81,6 +78,21 @@ public static class ConfigureService
         services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
 
         services.AddScoped<IEmailSender, EmailService>();
+
+        #endregion
+
+
+        #region Hangfire
+
+
+        services.AddHangfire(config => config
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+
+
+        services.AddHangfireServer();
 
         #endregion
 

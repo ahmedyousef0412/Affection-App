@@ -29,5 +29,6 @@ global using Microsoft.AspNetCore.Identity.UI.Services;
 global using MimeKit;
 global using Affection.Domain.Const;
 global using Affection.Infrastructure.Helper;
+global using Hangfire;
 
 

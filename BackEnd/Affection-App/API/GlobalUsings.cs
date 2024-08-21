@@ -17,7 +17,8 @@ global using Microsoft.AspNetCore.Diagnostics;
 global using Affection.API.Configuration;
 global using Affection.Domain.Abstraction;
 global using Affection.API.Errors;
-
+global using Hangfire;
+global using HangfireBasicAuthenticationFilter;
 
 
 
