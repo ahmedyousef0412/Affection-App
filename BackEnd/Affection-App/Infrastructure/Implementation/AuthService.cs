@@ -1,4 +1,6 @@
 ﻿
+using Hangfire;
+
 namespace Affection.Infrastructure.Implementation;
 
 internal class AuthService
@@ -37,7 +39,6 @@ internal class AuthService
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
             _logger.LogInformation("Confirmation code : {code}", code);
-
 
             await SendConfirmationEmail(user, code);
 
@@ -279,7 +280,10 @@ internal class AuthService
                     { "{{CurrentYear}}", DateTime.Now.Year.ToString()},
             }
         );
-        await _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "✅ Affection App : Email Confirmation", emailBody);
+
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "✅ Affection App : Email Confirmation", emailBody));
+
+        await Task.CompletedTask;
 
 
     }
@@ -298,7 +302,12 @@ internal class AuthService
                     { "{{CurrentYear}}", DateTime.Now.Year.ToString()},
             }
         );
-        await _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "✅ Affection App : Change Password", emailBody);
+
+
+        BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "✅ Affection App : Change Password", emailBody));
+       
+        await Task.CompletedTask;
+       
     }
 
     private async Task NotifyAllUsersAsync(ApplicationUser newUser)
@@ -321,11 +330,16 @@ internal class AuthService
                       }
                     );
 
-                await _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "🥳🎉🎊 New User Joined", emailBody);
+                BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "🥳🎉🎊 New User Joined", emailBody));
+
+
+                await Task.CompletedTask;
             }
 
         }
     }
+  
+    
     private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user )
     {
         var photoUrl = user.Photos?.FirstOrDefault(u => u.IsMain)?.Url;
