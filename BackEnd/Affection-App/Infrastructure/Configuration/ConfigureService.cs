@@ -1,5 +1,7 @@
 ﻿
 
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 namespace Affection.Infrastructure.Configuration;
 public static class ConfigureService
 {
@@ -10,7 +12,7 @@ public static class ConfigureService
         services.AddScoped<IAuthService, AuthService>();
 
 
-        #region Identity
+        #region Identity Options
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
                .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -21,14 +23,17 @@ public static class ConfigureService
 
         services.Configure<IdentityOptions>(options =>
         {
-
             options.Password.RequiredLength = 8;
 
             options.User.RequireUniqueEmail = true;
 
+            options.SignIn.RequireConfirmedEmail = true;
+
             options.Lockout.MaxFailedAccessAttempts = 3;
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(4);
+
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
         });
+
         #endregion
 
         #region JWT
@@ -71,6 +76,15 @@ public static class ConfigureService
 
         #endregion
 
+        #region MailConfiguration
+
+        services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
+
+        services.AddScoped<IEmailSender, EmailService>();
+
+        #endregion
+
+        services.AddHttpContextAccessor();
         return services;
     }
 }

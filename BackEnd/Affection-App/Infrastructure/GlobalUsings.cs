@@ -23,4 +23,11 @@ global using System.Security.Claims;
 global using System.Text.Json;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using System.Security.Cryptography;
+global using MailKit.Net.Smtp;
+global using MailKit.Security;
+global using Microsoft.AspNetCore.Identity.UI.Services;
+global using MimeKit;
+global using Affection.Domain.Const;
+global using Affection.Infrastructure.Helper;
+
 
