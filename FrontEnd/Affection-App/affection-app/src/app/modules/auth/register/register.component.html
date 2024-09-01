@@ -1,0 +1,135 @@
+<div class="parent">
+    <div class="wrapper">
+        <form #registerForm="ngForm" (ngSubmit)="onSubmit(registerForm)">
+            <h1>Register</h1>
+            
+            <div class="form-row">
+                <!-- Email -->
+                <div class="form-group input-box">
+                    <label for="email">Email</label>
+                    <div class="input-container">
+                        <!-- <i class="fas fa-envelope"></i> -->
+                        <input type="email" id="email" placeholder="example@ex.com" name="email" [(ngModel)]="registerData.email" #email="ngModel" required email>
+                    </div>
+                    <div *ngIf="email.invalid && email.touched" class="error">
+                        Valid email is required.
+                    </div>
+                </div>
+                
+                <!-- Password -->
+                <div class="form-group input-box">
+                    <label for="password">Password</label>
+                    <div class="input-container">
+                        <!-- <i class="fas fa-lock"></i> -->
+                        <input type="password" id="password" name="password" [(ngModel)]="registerData.password" #password="ngModel" required minlength="8">
+                    </div>
+                    <div *ngIf="password.invalid && password.touched" class="error">
+                        Password should be at least 8 digits and should contain lowercase, non-alphanumeric, and uppercase characters.
+                    </div>
+                </div>
+
+                <div class="form-group input-box">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-container">
+                        <!-- <i class="fas fa-lock"></i> -->
+                        <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="registerData.confirmPassword" #confirmPassword="ngModel" required>
+                    </div>
+                    <div *ngIf="!passwordsMatch(registerForm.value.password, registerForm.value.confirmPassword)" class="error">
+                        Passwords do not match!
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+               
+                
+                <!-- Gender -->
+                <div class="form-group input-box">
+                   
+                    <label for="gender">Gender</label>
+                    <!-- <span class="fa fa-venus-mars p-2"></span> -->
+                    <select id="gender" name="gender" class="form-control" [(ngModel)]="registerData.gender" #gender="ngModel" required>
+                        
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <div *ngIf="gender.invalid && gender.touched" class="error">
+                        Gender is required.
+                    </div>
+                </div>
+
+                  <!-- Username -->
+                  <div class="form-group input-box">
+                    <label for="userName">Username</label>
+                    <div class="input-container">
+                        <!-- <i class="fas fa-user"></i> -->
+                        <input type="text" placeholder="Username" id="userName" name="userName" [(ngModel)]="registerData.userName" #userName="ngModel" required>
+                    </div>
+                    <div *ngIf="userName.invalid && userName.touched" class="error">
+                        Username is required.
+                    </div>
+                </div>
+                
+                <!-- Known As -->
+                <div class="form-group input-box">
+                    <label for="knowAs">Known As</label>
+                    <div class="input-container">
+                        <!-- <i class="fas fa-user"></i> -->
+                        <input type="text" placeholder="Nickname" id="knowAs" name="knowAs" [(ngModel)]="registerData.knowAs" #knowAs="ngModel" required>
+                    </div>
+                    <div *ngIf="knowAs.invalid && knowAs.touched" class="error">
+                        Nickname is required.
+                    </div>
+                </div>
+            </div>
+            
+
+            
+            <div class="form-row">
+                <!-- Country -->
+                <div class="form-group input-box">
+                    <label for="country">Country</label>
+                    <div class="input-container">
+                        <!-- <i class="fas fa-globe"></i> -->
+                        <input type="text" placeholder="Paris" id="country" name="country" [(ngModel)]="registerData.country" #country="ngModel" required>
+                    </div>
+                    <div *ngIf="country.invalid && country.touched" class="error">
+                        Country is required.
+                    </div>
+                </div>
+
+                <!-- City -->
+                <div class="form-group input-box">
+                    <label for="city">City</label>
+                    <div class="input-container">
+                        <!-- <i class="fas fa-city"></i> -->
+                        <input type="text" placeholder="Lyon" id="city" name="city" [(ngModel)]="registerData.city" #city="ngModel" required>
+                    </div>
+                    <div *ngIf="city.invalid && city.touched" class="error">
+                        City is required.
+                    </div>
+                </div>
+
+                <div class="form-group input-box">
+                    <label for="dateOfBirth">Date of Birth</label>
+                    <input type="date" placeholder="4-12-1996" id="dateOfBirth" name="dateOfBirth" [(ngModel)]="registerData.dateOfBirth" #dateOfBirth="ngModel" required (change)="validateDateOfBirth()">
+                    <div *ngIf="dateOfBirth.invalid" class="error">
+                        Date of birth cannot be in the future.
+                    </div>
+                </div>
+            </div>
+            
+           
+
+            <!-- Submit Button -->
+            <button class="btn" type="submit" [disabled]="registerForm.invalid">Register</button>
+
+            <br><br>
+            <!-- Register Link -->
+            <div class="register-link">
+                <p>Already have an account? <a routerLink="/login">Login</a></p>
+            </div>
+        </form>
+    </div>
+</div>

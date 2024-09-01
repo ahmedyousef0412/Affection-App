@@ -1,6 +1,4 @@
 ﻿
-using Hangfire;
-
 namespace Affection.Infrastructure.Implementation;
 
 internal class AuthService

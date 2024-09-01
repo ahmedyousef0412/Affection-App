@@ -1,0 +1,18 @@
+.not-found-container {
+    margin-top: 100px; /* Adjust margin as needed */
+  }
+  
+  .error-icon {
+    font-size: 80px;
+    color: #f44336; /* Material red */
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-top: 20px;
+  }
+  
+  p {
+    margin-top: 10px;
+  }
+  

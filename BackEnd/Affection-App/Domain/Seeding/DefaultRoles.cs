@@ -2,7 +2,7 @@
 
 
 namespace Affection.Domain.Seeding;
-public static class DefaultRoles
+public  class DefaultRoles
 {
 
     public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)

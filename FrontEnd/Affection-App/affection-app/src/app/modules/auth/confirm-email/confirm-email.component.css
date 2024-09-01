@@ -1,0 +1,21 @@
+.confirmation-message {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.celebration-image {
+  width: 150px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  font-size: 1.5em;
+  color: #4CAF50; /* Green color for success */
+}
+
+.login-link {
+  color: #2196F3; /* Blue color for link */
+  text-decoration: underline;
+  font-weight: bold;
+}

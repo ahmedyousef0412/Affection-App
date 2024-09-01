@@ -41,23 +41,18 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 #region Seed Roles and Users
-
 var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 
 using var scope = scopeFactory.CreateScope();
 
-var roleManger = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-
+var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+var userConfig = scope.ServiceProvider.GetRequiredService<IOptions<DefaultUser>>().Value;
+var defaultUsers = scope.ServiceProvider.GetRequiredService<DefaultUsers>(); // Get DefaultUsers instance
 
-
-await DefaultRoles.SeedRolesAsync(roleManger);
-
-var defaultUsers = scope.ServiceProvider.GetRequiredService<DefaultUsers>();
-
+// Seed roles and users
+await DefaultRoles.SeedRolesAsync(roleManager);
 await defaultUsers.SeedUsersAsync(userManager);
-
 
 
 
