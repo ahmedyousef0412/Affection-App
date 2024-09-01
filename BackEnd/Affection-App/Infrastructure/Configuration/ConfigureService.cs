@@ -1,4 +1,6 @@
 ﻿
+using Affection.Domain.Settings;
+
 namespace Affection.Infrastructure.Configuration;
 public static class ConfigureService
 {

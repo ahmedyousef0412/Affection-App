@@ -7,10 +7,14 @@ public static class ConfigureService
 
     public static IServiceCollection AffectionApiDependeciesService(this IServiceCollection services  ,IConfiguration configuration)
     {
+
         services.AddControllers();
 
         services.AddSwaggerConfig().AddMapsterConfig();
         services.ApplyCORS(configuration);
+
+      
+
         services.AddSingleton<DefaultUsers>();
 
         services.AddConnectionString(configuration);
@@ -25,7 +29,7 @@ public static class ConfigureService
 
         services.AddExceptionHandler<GlobalExceptionHandler>();
         services.AddProblemDetails();
-
+       
         return services;
     }
 
@@ -41,9 +45,6 @@ public static class ConfigureService
 
         return services;
     }
-
-
-   
 
     private static IServiceCollection AddSwaggerConfig(this IServiceCollection services)
     {

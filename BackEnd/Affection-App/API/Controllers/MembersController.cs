@@ -1,7 +1,4 @@
 ﻿
-using Affection.Domain.Const;
-using Microsoft.AspNetCore.Authorization;
-
 namespace Affection.API.Controllers;
 [Route("api/[controller]")]
 [ApiController]
@@ -9,9 +6,10 @@ namespace Affection.API.Controllers;
 public class MembersController : ControllerBase
 {
 
-    //[HttpGet("")]
-    //public async Task<IActionResult> GetAll()
-    //{
-    //    return Ok();
-    //}
+    [HttpGet("")]
+    public async Task<IActionResult> GetAll()
+    {
+        var response = new { message = "hello" }; // Return as JSON object
+        return Ok(response);
+    }
 }

@@ -1,4 +1,5 @@
 ﻿
+
 namespace Affection.Domain.Seeding;
 
 
@@ -16,7 +17,7 @@ public class DefaultUsers(IOptions<DefaultUser> user)
             KnowAs = "Konafa",
             Country = "Cairo",
             City = "Mansoura",
-            DateOfBirth = new DateTime(1996,12,15), 
+            DateOfBirth = new DateTime(1996, 12, 15),
             EmailConfirmed = true,
         };
 
@@ -25,8 +26,17 @@ public class DefaultUsers(IOptions<DefaultUser> user)
         if (user is null)
         {
             await userManager.CreateAsync(admin, _user.Password);
+            //Ensure the role exists
+            var roleExists = await userManager.IsInRoleAsync(admin, AppRoles.Admin);
 
-            await userManager.AddToRoleAsync(admin, AppRoles.Admin);
+            if (!roleExists)
+            {
+                await userManager.AddToRoleAsync(admin, AppRoles.Admin);
+
+            }
         }
     }
 }
+
+
+
