@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Common\Affection.Contract.csproj" />
     <ProjectReference Include="..\Domain\Affection.Domain.csproj" />
   </ItemGroup>
