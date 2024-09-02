@@ -1,5 +1,4 @@
 ﻿
-using Affection.Domain.Settings;
 
 namespace Affection.Infrastructure.Configuration;
 public static class ConfigureService
@@ -9,6 +8,8 @@ public static class ConfigureService
     {
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IPhotoService, PhotoService>();
 
 
         #region Identity Options
@@ -95,6 +96,14 @@ public static class ConfigureService
 
 
         services.AddHangfireServer();
+
+        #endregion
+
+        #region Cloudinary
+
+        services.AddScoped<IImageUploadService, ImageUploadService>();
+
+        services.Configure<CloudinarySettings>(configuration.GetSection(nameof(CloudinarySettings)));
 
         #endregion
 

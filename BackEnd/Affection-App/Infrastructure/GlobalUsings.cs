@@ -30,5 +30,7 @@ global using MimeKit;
 global using Affection.Domain.Const;
 global using Affection.Infrastructure.Helper;
 global using Hangfire;
-
-
+global using CloudinaryDotNet.Actions;
+global using CloudinaryDotNet;
+global using Affection.Contract.Photos;
+global using Error = Affection.Domain.Abstraction.Error;
