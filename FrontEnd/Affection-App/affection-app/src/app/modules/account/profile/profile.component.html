@@ -1,0 +1,36 @@
+<div class="profile-container">
+    <div class="profile-header">
+      <img
+        *ngIf="profile.mainPhotoUrl; else defaultPhoto"
+        [src]="profile.mainPhotoUrl"
+        alt="{{ profile.knowAs }}"
+        class="profile-photo"
+      />
+      <ng-template #defaultPhoto>
+        <img src="assets/imgs/user.png" alt="Default" class="profile-photo" />
+      </ng-template>
+      <h2>{{ profile.knowAs }}</h2>
+      <p>{{ profile.city }}, {{ profile.country }}</p>
+    </div>
+  
+    <div class="profile-details">
+      <h3>About {{ profile.knowAs }}</h3>
+      <p><strong>Looking for:</strong> {{ profile.lookingFor }}</p>
+      <p><strong>Introduction:</strong> {{ profile.introduction }}</p>
+      <p><strong>Interests:</strong> {{ profile.intrestes }}</p>
+      <p><strong>Email:</strong> {{ profile.email }}</p>
+      <p><strong>Gender:</strong> {{ profile.gender }}</p>
+      <p><strong>Date of Birth:</strong> {{ profile.dateOfBirth | date: 'longDate' }}</p>
+    </div>
+
+
+   
+
+
+    <div class="profile-actions">
+        <button class="edit-profile-btn" routerLink="/account/editprofile" >Edit Profile</button>
+        <button class="upload-photo-btn" routerLink="/account/uploadPhoto" >Upload Photo</button>
+        <button class="show-photos-btn" routerLink="/account/showPhotos" >Show Photos</button>
+      </div>
+  </div>
+  

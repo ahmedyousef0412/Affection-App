@@ -9,7 +9,10 @@ public static class ConfigureService
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IMemberService, MemberService>();
         services.AddScoped<IPhotoService, PhotoService>();
+        services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<LogUserActivity>();
 
 
         #region Identity Options

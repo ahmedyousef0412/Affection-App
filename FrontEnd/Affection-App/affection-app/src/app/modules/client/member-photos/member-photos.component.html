@@ -1,0 +1,11 @@
+<div class="photo-gallery" *ngIf="photos.length > 0">
+    <div class="photo-item" *ngFor="let photo of photos">
+      <img [src]="photo?.url" [alt]="'Photo '">
+    
+    </div>
+  </div>
+  
+  <div *ngIf="photos.length === 0">
+    <p>No photos available.</p>
+  </div>
+  

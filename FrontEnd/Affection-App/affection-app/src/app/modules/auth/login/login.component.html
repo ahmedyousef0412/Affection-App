@@ -13,7 +13,7 @@
             </div>
             <div class="remember-forget">
                 <label><input type="checkbox">Remember me</label>
-                <a routerLink="/forgetPassword">Forgot password?</a>
+                <a routerLink="/auth/forgetPassword">Forgot password?</a>
             </div>
             
             <button class="btn" type="submit" [disabled]="loginForm.invalid">Login</button>
@@ -22,7 +22,7 @@
 
             <div class="text-center pt-4">
                 Don't have an account?
-                <a id="forget" routerLink="/register">Register</a>
+                <a id="forget" routerLink="/auth/register">Register</a>
             </div>
         </form>
     </div>

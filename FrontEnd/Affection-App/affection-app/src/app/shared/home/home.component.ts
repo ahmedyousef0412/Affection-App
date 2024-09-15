@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { authResponse } from '../../core/models/authentication/authResponse';
-import { AuthService } from '../../core/services/authService';
+import { AuthService } from '../../core/services/auth.service';
+
 
 
 @Component({
@@ -14,8 +15,8 @@ export class HomeComponent implements OnInit  {
 
   isLogged: boolean = false;
   currentUser$!: Observable<authResponse | null>;
-
-  constructor(public authService: AuthService) {}
+  authService:AuthService = inject(AuthService);
+  constructor() {}
 
   ngOnInit(): void {
     this.currentUser$ = this.authService.currentUser$;

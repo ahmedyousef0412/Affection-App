@@ -1,8 +1,8 @@
-import { confirmEmailRequest } from './../../../core/models/authentication/confirmEmailRequest';
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../core/services/authService';
+
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Result } from '../../../core/models/result.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-confirm-email',
@@ -14,9 +14,9 @@ export class ConfirmEmailComponent implements OnInit {
 
 
   message: string = '';
-
+  authService:AuthService = inject(AuthService);
   
-  constructor(private route: ActivatedRoute, private authService: AuthService, private router: Router) { }
+  constructor(private route: ActivatedRoute,  private router: Router) { }
 
 
   ngOnInit(): void {

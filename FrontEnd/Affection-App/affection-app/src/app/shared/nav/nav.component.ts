@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../core/services/authService';
+import { Component, inject, OnInit } from '@angular/core';
+
 import { authResponse } from '../../core/models/authentication/authResponse';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-nav',
@@ -11,8 +12,8 @@ import { Observable } from 'rxjs';
 export class NavComponent implements OnInit {
   isLogged: boolean = false;
   currentUser$!: Observable<authResponse | null>;
-
-  constructor(public authService: AuthService) {}
+  authService:AuthService = inject(AuthService);
+  constructor() {}
 
   ngOnInit(): void {
     this.currentUser$ = this.authService.currentUser$;

@@ -1,7 +1,4 @@
 ﻿
-
-using Affection.Contract.Photos;
-
 namespace Affection.API.Controllers;
 [Route("me")]
 [ApiController]
@@ -19,6 +16,7 @@ public class AccountController(IUserService userService , IPhotoService photoSer
         return Ok(result.Value);
     }
 
+   
     [HttpPut("info")]
     public async Task<IActionResult> Info( [FromBody] UpdateProfileRequest request)
     {
@@ -27,6 +25,7 @@ public class AccountController(IUserService userService , IPhotoService photoSer
         return NoContent();
     }
 
+    
     [HttpPut("change-password")]
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
@@ -35,6 +34,7 @@ public class AccountController(IUserService userService , IPhotoService photoSer
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }
 
+   
     [HttpPost("upload-photo")]
     public async Task<IActionResult> UploadPhoto( IFormFile file ,CancellationToken cancellationToken)
     {
@@ -45,6 +45,18 @@ public class AccountController(IUserService userService , IPhotoService photoSer
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }
 
+
+    [HttpGet("photos")]
+    public async Task<IActionResult> GetPhotos(CancellationToken cancellationToken)
+    {
+
+        var userId = User.GetUserId();
+
+        return Ok(await _photoService.GetPhotos(userId!,cancellationToken)); 
+    }
+
+   
+
     [HttpPut("set-photo-main/{photoId}")]
     public async Task<IActionResult> SetPhotoMain( int photoId, CancellationToken cancellationToken)
     {
@@ -54,6 +66,8 @@ public class AccountController(IUserService userService , IPhotoService photoSer
 
         return result.IsSuccess ? NoContent() : result.ToProblem();
     }
+   
+    
     [HttpDelete("delete-photo/{photoId}")]
     public async Task<IActionResult> DeletePhoto(int photoId, CancellationToken cancellationToken)
     {

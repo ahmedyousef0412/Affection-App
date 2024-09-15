@@ -1,0 +1,120 @@
+.profile-container {
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .profile-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .profile-header h2 {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+  
+  .profile-header p {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .profile-details {
+    margin-top: 20px;
+  }
+  
+  .profile-details h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .profile-details p {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .profile-details p strong {
+    font-weight: 600;
+  }
+ 
+.profile-actions {
+  text-align: right;
+  margin-top: 20px;
+  margin-right: 2px;
+}
+
+.edit-profile-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 20px;
+}
+
+.edit-profile-btn:hover {
+  background-color: #0056b3;
+}.upload-photo-btn {
+  padding: 10px 20px; 
+  background-color: #28a745; 
+  color: white; 
+  border: none; 
+  border-radius: 5px; 
+  font-size: 16px; 
+  cursor: pointer; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+
+  margin-left: 20px;
+}
+
+.upload-photo-btn:hover {
+  background-color: #218838; 
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.upload-photo-btn:active {
+  background-color: #1e7e34; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+}
+
+.upload-photo-btn:focus {
+  outline: none; 
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5); 
+}
+.show-photos-btn {
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: crimson;
+  color: white; /* White text */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin-right: 10px; /* Add some space between buttons if needed */
+  margin-left: 20px;
+}
+
+.show-photos-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+.show-photos-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Focus shadow */
+}

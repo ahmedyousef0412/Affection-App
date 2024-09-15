@@ -1,0 +1,15 @@
+<div class="photo-gallery" *ngIf="photos.length > 0">
+    <div class="photo-item" *ngFor="let photo of photos">
+      <img [src]="photo?.url" [alt]="'Photo ' + photo.id">
+      <div *ngIf="photo.isMain"></div>
+      <div *ngIf="!photo.isMain" class="photo-actions">
+        <button (click)="setPhotoMain(photo.id)" class="action-btn">Set Main</button>
+        <button (click)="deletePhoto(photo.id)" class="action-btn btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="photos.length === 0">
+    <p>No photos available.</p>
+  </div>
+  

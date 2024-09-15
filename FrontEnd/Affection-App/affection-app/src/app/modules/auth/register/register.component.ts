@@ -1,16 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from '../../../core/services/authService';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../../core/services/auth.service';
+import { CanComponentDeactivate } from '../../../shared/models/canComponentDeactivate ';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent  {
+export class RegisterComponent  implements CanComponentDeactivate {
 
+
+  authService:AuthService = inject(AuthService);
   registerData = {
     email: '',
     password: '',
@@ -23,7 +27,7 @@ export class RegisterComponent  {
     city: ''
   };
   
- constructor(private authService:AuthService , private router:Router ,private toastr: ToastrService ){}
+ constructor( private router:Router ,private toastr: ToastrService ){}
 
  startDate = new Date(1996, 1, 1);
 
@@ -34,7 +38,7 @@ onSubmit(form: NgForm) {
     this.isLoading = true;
     this.authService.register(form.value).subscribe({
       next: (res) => {
-        this.router.navigateByUrl('/login');
+        this.router.navigateByUrl('auth/login');
         form.reset();
         this.toastr.success("Register Successfully. Please check your email to confirm email.");
         this.isLoading = false;
@@ -73,5 +77,17 @@ onSubmit(form: NgForm) {
       this.futureDateError = false;
       
     }
+  }
+
+
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    if (this.isFormDirty()) {
+      return confirm('You have unsaved changes. Do you really want to leave?');
+    }
+    return true;
+  }
+
+  private isFormDirty(): boolean {
+    return !!Object.values(this.registerData).find(field => field); // Returns true if any field has a value
   }
 }

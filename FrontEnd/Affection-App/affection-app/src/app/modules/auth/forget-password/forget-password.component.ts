@@ -1,8 +1,8 @@
 import { forgetPasswordRequest } from './../../../core/models/authentication/forgetPasswordRequest';
-import { Component } from '@angular/core';
-import { AuthService } from '../../../core/services/authService';
+import { Component, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-forget-password',
@@ -11,12 +11,13 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ForgetPasswordComponent {
 
-
+  authService:AuthService = inject(AuthService);
+  
   credentials: forgetPasswordRequest = {
     email: ''
   };
 
-  constructor(private authService: AuthService , private toastr:ToastrService ) { }
+  constructor(private toastr:ToastrService ) { }
   
   reset(form: NgForm) {
     if (form.valid) {

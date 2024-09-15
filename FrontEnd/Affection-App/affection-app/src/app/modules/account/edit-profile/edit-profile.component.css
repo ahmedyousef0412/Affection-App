@@ -1,0 +1,92 @@
+.container {
+  max-width: 900px;
+}
+
+.card {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-body img {
+  border: 3px solid #ddd;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+textarea {
+  resize: none;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.form-group label {
+  font-size: 1.1rem; /* Increase font size */
+  font-weight: bold; /* Make text bold */
+  margin-bottom: 0.5rem; /* Add space below the label */
+  color: #333; /* Dark gray color for better readability */
+  display: block; /* Ensure labels take up full width */
+}
+
+.form-group .form-control {
+  border-radius: 0.25rem; /* Slightly rounded corners */
+  border-color: #ced4da; /* Light gray border color */
+  padding: 0.5rem; /* Padding inside the textarea/input */
+  font-size: 1rem; /* Font size for inputs */
+}
+
+.text-danger {
+  font-size: 0.875rem; /* Slightly smaller font size for error messages */
+  margin-top: 0.25rem; /* Space above error messages */
+}
+
+.btn-success {
+  background-color: #28a745; /* Green background for the button */
+  border-color: #28a745; /* Match border color with background */
+  color: #fff; /* White text color */
+}
+
+.btn-success:hover {
+  background-color: #218838; /* Darker green on hover */
+  border-color: #1e7e34; /* Darker border color on hover */
+}
+.profile-card {
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-photo {
+  border: 2px solid #ddd;
+  padding: 5px;
+}
+
+.password-panel {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.password-panel .form-control {
+  margin-bottom: 10px;
+}
+
+.password-panel button {
+  width: 100%;
+}
+.profile-card {
+  margin-bottom: 20px; /* Space between the profile card and change password button/panel */
+}
+
+.password-panel {
+  padding: 20px;
+}
+
+.btn-primary {
+  margin-bottom: 10px; /* Space between the change password button and the panel */
+}

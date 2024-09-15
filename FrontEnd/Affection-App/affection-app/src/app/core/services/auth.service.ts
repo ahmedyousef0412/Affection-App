@@ -2,7 +2,7 @@
 import { confirmEmailRequest } from './../models/authentication/confirmEmailRequest';
 import { registerRequest } from './../models/authentication/registerRequest';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BehaviorSubject, catchError, map, Observable, of, Subject, throwError } from 'rxjs';
 import { Result } from '../models/result.model';
 import { environment } from '../../../environments/environment';
@@ -14,6 +14,7 @@ import { forgetPasswordRequest } from '../models/authentication/forgetPasswordRe
 import { resetPasswordRequest } from '../models/authentication/resestPasswordRequest';
 import { ErrorHandlingService } from './error-handling.service';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Injectable({
@@ -28,9 +29,17 @@ export class AuthService {
     constructor(
         private http: HttpClient,
         private errorHandlingService: ErrorHandlingService,
-        private router: Router
+        private router: Router,
+        @Inject(PLATFORM_ID) private platformId: any
 
-    ) { this.loadCurrentUser(); }
+    ) {
+        this.loadCurrentUser();
+
+        if (isPlatformBrowser(this.platformId)) {
+            localStorage.getItem('accessToken');
+            localStorage.getItem('refreshToken');
+        }
+    }
 
 
     register(request: registerRequest): Observable<Result> {
@@ -110,17 +119,6 @@ export class AuthService {
         );
     }
 
-    getMembers(): Observable<any> {
-        const url = `${environment.apiUrl}${Configurations.Clients.Members}`;
-
-        return this.http.get(url).pipe(
-            catchError(error => {
-                console.error('Error fetching members:', error);
-
-                return of([]); // Return an empty array or an appropriate fallback value
-            })
-        );
-    }
 
 
 
@@ -129,7 +127,7 @@ export class AuthService {
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         this.currentUserSource.next(null);
-        this.router.navigate(['login']);
+        this.router.navigate(['auth/login']);
     }
 
     isLoggedIn(): boolean {
@@ -156,12 +154,14 @@ export class AuthService {
         return throwError(() => new Error(error.message || 'An unknown error occurred.'));
     }
 
-    
+
     private loadCurrentUser() {
-        const userJson = localStorage.getItem('user');
-        if (userJson) {
-            const user: authResponse = JSON.parse(userJson);
-            this.currentUserSource.next(user);
+        if (typeof localStorage !== 'undefined') {
+            const userJson = localStorage.getItem('user');
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                this.currentUserSource.next(user);
+            }
         }
     }
 }
