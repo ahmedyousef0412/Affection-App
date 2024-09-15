@@ -1,0 +1,19 @@
+<div class="upload-photo-container">
+  <h3>Upload  Photo</h3>
+
+  <!-- Photo Preview -->
+  <div *ngIf="photoPreview" class="photo-preview">
+    <img [src]="photoPreview" alt="Photo Preview">
+  </div>
+
+  <!-- File Input -->
+  <input type="file" (change)="onFileSelected($event)" accept="image/*" class="file-input" />
+
+  <!-- Upload Button -->
+
+  <div class="photo-actions">
+    <button class="upload-btn" (click)="uploadPhoto()" [disabled]="!selectedFile">Upload Photo</button>
+    <button class="show-in-gallery" routerLink="/account/showPhotos">Show Gallery</button>
+  </div>
+
+</div>

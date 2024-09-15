@@ -20,9 +20,9 @@ global using Affection.API.Errors;
 global using Hangfire;
 global using HangfireBasicAuthenticationFilter;
 global using Microsoft.Extensions.Options;
-global using Affection.Domain.Const;
 global using Microsoft.AspNetCore.Authorization;
 global using Affection.Contract.Users;
+global using Affection.Contract.Members;
 
 
 

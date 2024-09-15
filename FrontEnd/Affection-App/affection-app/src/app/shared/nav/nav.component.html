@@ -6,26 +6,28 @@
       <ng-container *ngIf="(currentUser$ | async) as user">
         <ng-container *ngIf="user">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/members" routerLinkActive="active">Matches</a>
+            <a class="nav-link" routerLink="/client/members" routerLinkActive="active">Members</a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" routerLink="/lists" routerLinkActive="active">Lists</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="/message" routerLinkActive="active">Messages</a>
-          </li>
+          </li> -->
         </ng-container>
       </ng-container>
     </ul>
 
     <div *ngIf="(currentUser$ | async) as user" class="dropdown" dropdown>
+      <img src="{{ user.photoUrl || './assets/imgs/user.png' }}" alt="{{ user.userName }}" />
       <button class="text-button  btn btn-success dropdown-toggle text-light mx-2" type="button" id="dropdownMenuButton"
         data-bs-toggle="dropdown" aria-expanded="false">
         {{ user.userName | titlecase }}
       </button>
       <div class="dropdown-menu mt-3">
-        <a class="dropdown-item" routerLink='/Member/details'> Profile</a>
-        <a class="dropdown-item" routerLink='/Member/edit'>Edit Profile</a>
+        <a class="dropdown-item" routerLink='/account/profile'> Profile</a>
+        <a class="dropdown-item" routerLink='/account/editprofile'>Edit Profile</a>
+       
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" (click)="logout()">Logout</a>
       </div>

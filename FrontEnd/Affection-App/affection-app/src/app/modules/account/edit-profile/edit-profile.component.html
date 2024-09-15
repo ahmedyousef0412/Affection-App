@@ -1,0 +1,238 @@
+<div *ngIf="user" class="container mt-5">
+    <div class="row">
+      <div class="col-md-4">
+        <h1>Your Profile</h1>
+      </div>
+      <div class="col-md-8">
+        <div class="alert alert-info" *ngIf="editForm.dirty">
+          <strong>Information:</strong> You have made changes. Any unsaved changes
+          will be lost.
+        </div>
+      </div>
+    </div>
+  
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <div class="card profile-card">
+          <div class="card-body text-center">
+            <img
+              [src]="user.mainPhotoUrl || 'assets/imgs/user.png'"
+              alt="Profile Photo"
+              class="img-fluid rounded-circle mb-3 profile-photo"
+            />
+            <h5>{{ user.knowAs }}</h5>
+            <p>{{ user.city }}, {{ user.country }}</p>
+          </div>
+          <div class="card-footer">
+            <button
+              [disabled]="!editForm.dirty || !editForm.valid"
+              form="editForm"
+              type="submit"
+              class="btn btn-success btn-block"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+
+        
+
+         <!-- Change Password Button -->
+         <button class="btn btn-primary mt-3" (click)="togglePasswordChange()">
+            Change Password
+          </button>
+    
+          <!-- Change Password Panel -->
+          <div *ngIf="showPasswordPanel" class="card mt-3 password-panel">
+            <div class="card-body">
+              <form #changePasswordForm="ngForm" (ngSubmit)="changePassword()">
+                <div class="form-group">
+                  <label for="currentPassword">Current Password</label>
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    class="form-control"
+                    [(ngModel)]="userPassword.currentPassword"
+                    name="currentPassword"
+                    required
+                    #currentPasswordField="ngModel"
+                  />
+                  <div *ngIf="currentPasswordField.invalid && (currentPasswordField.dirty || currentPasswordField.touched)" class="text-danger">
+                    <div *ngIf="currentPasswordField.errors?.['required']">Current password is required.</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="newPassword">New Password</label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    class="form-control"
+                    [(ngModel)]="userPassword.newPassword"
+                    name="newPassword"
+                    required
+                    minlength="6"
+                    #newPasswordField="ngModel"
+                  />
+                  <div *ngIf="newPasswordField.invalid && (newPasswordField.dirty || newPasswordField.touched)" class="text-danger">
+                    <div *ngIf="newPasswordField.errors?.['required']">Password should be at least 8 digits and should contains Lowercase, NonAlphanumeric and Uppercase.</div>
+                    <div *ngIf="newPasswordField.errors?.['minlength']">New password must be at least 8 characters long.</div>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="changePasswordForm.invalid"
+                >
+                  Change Password
+                </button>
+              </form>
+            </div>
+          </div> 
+    
+       
+        <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+          {{ errorMessage }}
+        </div>
+      </div>
+
+
+
+
+      <div class="col-md-8">
+        <form id="editForm" #editForm="ngForm" (ngSubmit)="editProfile()">
+          <div class="form-group">
+            <label for="introduction">Introduction</label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="user.introduction"
+              name="introduction"
+              rows="4"
+              minlength="10"
+              maxlength="120"
+              required
+              #introduction="ngModel"
+              (blur)="introduction.control.markAsTouched()"
+            ></textarea>
+            <div
+              *ngIf="
+                introduction.invalid &&
+                (introduction.touched || introduction.dirty)
+              "
+              class="text-danger"
+            >
+              <div *ngIf="introduction.errors?.['required']">
+                Introduction is required.
+              </div>
+              <div *ngIf="introduction.errors?.['minlength']">
+                Introduction must be at least 10 characters long.
+              </div>
+              <div *ngIf="introduction.errors?.['maxlength']">
+                Introduction cannot be more than 120 characters long.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lookingFor">Looking for</label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="user.lookingFor"
+              name="lookingFor"
+              rows="4"
+              minlength="10"
+              maxlength="120"
+              required
+              #lookingFor="ngModel"
+              (blur)="lookingFor.control.markAsTouched()"
+            ></textarea>
+            <div
+              *ngIf="lookingFor.touched && lookingFor.invalid"
+              class="text-danger"
+            >
+              <div *ngIf="lookingFor.errors?.['required']">
+                Looking for is required.
+              </div>
+              <div *ngIf="lookingFor.errors?.['minlength']">
+                Looking for must be at least 10 characters long.
+              </div>
+              <div *ngIf="lookingFor.errors?.['maxlength']">
+                Looking for cannot be more than 120 characters long.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="intrestes">Interests</label>
+            <textarea
+              class="form-control"
+              [(ngModel)]="user.intrestes"
+              name="intrestes"
+              rows="4"
+              minlength="10"
+              maxlength="120"
+              required
+              #intrestes="ngModel"
+              (blur)="intrestes.control.markAsTouched()"
+            ></textarea>
+            <div
+              *ngIf="intrestes.invalid && (intrestes.dirty || intrestes.touched)"
+              class="text-danger"
+            >
+              <div *ngIf="intrestes.errors?.['required']">
+                Interests are required.
+              </div>
+              <div *ngIf="intrestes.errors?.['minlength']">
+                Interests must be at least 10 characters long.
+              </div>
+              <div *ngIf="intrestes.errors?.['maxlength']">
+                Interests cannot be more than 120 characters long.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="locationDetails">Location Details</label>
+            <div class="form-row">
+              <div class="col">
+                <input
+                  [(ngModel)]="user.country"
+                  type="text"
+                  name="country"
+                  class="form-control"
+                  placeholder="Country"
+                  required
+                  #country="ngModel"
+                />
+                <div
+                  *ngIf="country.invalid && (country.dirty || country.touched)"
+                  class="text-danger"
+                >
+                  <div *ngIf="country.errors?.['required']">
+                    Country is required.
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <input
+                  [(ngModel)]="user.city"
+                  type="text"
+                  name="city"
+                  class="form-control"
+                  placeholder="City"
+                  required
+                  #city="ngModel"
+                />
+                <div
+                  *ngIf="city.invalid && (city.dirty || city.touched)"
+                  class="text-danger"
+                >
+                  <div *ngIf="city.errors?.['required']">City is required.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+  
+      
+
+      </div>
+    </div>
+  </div>
+  

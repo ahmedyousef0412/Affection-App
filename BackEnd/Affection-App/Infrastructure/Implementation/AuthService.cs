@@ -1,23 +1,36 @@
 ﻿
+
 namespace Affection.Infrastructure.Implementation;
 
 internal class AuthService
     (
          UserManager<ApplicationUser> userManager,
-         SignInManager<ApplicationUser> signInManager
+         SignInManager<ApplicationUser> signInManager,
+         ApplicationDbContext context
          , IJWTProvider jwt
          , IHttpContextAccessor httpContext
          , ILogger<AuthService> logger,
-         IEmailSender emailSender
+         IEmailSender emailSender,
+         ICacheService cacheService
     ) : IAuthService
 {
+
+    #region Fields
+
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+    private readonly ApplicationDbContext _context = context;
     private readonly IJWTProvider _jwt = jwt;
     private readonly IHttpContextAccessor _httpContext = httpContext;
     private readonly ILogger<AuthService> _logger = logger;
     private readonly IEmailSender _emailSender = emailSender;
+    private readonly ICacheService _cacheService = cacheService;
     private readonly int _refreshTokenExpiryDays = 14;
+    private const string CacheKeyPrefix = "Members_";
+
+
+    #endregion
+
 
     public async Task<Result> RgisterAsync(RegisterRequest request, CancellationToken cancellationToken = default)
     {
@@ -31,8 +44,17 @@ internal class AuthService
 
         var result = await _userManager.CreateAsync(user, request.Password);
 
+
         if (result.Succeeded)
         {
+
+
+            //var cacheKey = $"{CacheKeyPrefix}{filters.PageNumber}_{filters.PageSize}" +
+            //                      $"_{filters.Gender}_{filters.CurrentUserName}" +
+            //                      $"_{filters.OrderBy}_{filters.MinAge}_{filters.MaxAge}";
+            //_cacheService.RemoveData(cacheKey);
+
+
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
@@ -53,7 +75,9 @@ internal class AuthService
     {
 
         //Check User?
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        //var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _context.Users.Where(u => u.Email == request.Email)
+            .Include(u => u.Photos).FirstOrDefaultAsync();
 
         if (user is null)
             return Result.Failure<AuthResponse>(UserError.InvalidCredentials);
@@ -178,10 +202,10 @@ internal class AuthService
 
         var error = result.Errors.First();
 
-        return Result.Failure(new Domain.Abstraction.Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
+        return Result.Failure(new Error(error.Code, error.Description, StatusCodes.Status400BadRequest));
     }
 
-   
+
 
     public async Task<Result> ResendConfirmationEmailAsync(ResendConfirmationEmail request)
     {
@@ -212,7 +236,7 @@ internal class AuthService
         if (user is null)
             return Result.Success();
 
-        if(!user.EmailConfirmed)
+        if (!user.EmailConfirmed)
             return Result.Failure(UserError.EmailNotConfirmed);
 
 
@@ -255,7 +279,7 @@ internal class AuthService
 
         if (result.Succeeded)
             return Result.Success();
-        
+
 
 
         var error = result.Errors.First();
@@ -264,7 +288,7 @@ internal class AuthService
     }
 
 
-    private async Task SendConfirmationEmail(ApplicationUser user ,string code)
+    private async Task SendConfirmationEmail(ApplicationUser user, string code)
     {
 
         var origin = _httpContext.HttpContext?.Request.Headers.Origin;
@@ -274,7 +298,7 @@ internal class AuthService
             new Dictionary<string, string>
             {
                     { "[User's Name]", user.UserName!},
-                    { "{{Verification Link}}",$"{origin}/auth/confirm-email?userId={user.Id}&code={code}"},
+                    { "{{Verification Link}}",$"{origin}/auth/auth/confirm-email?userId={user.Id}&code={code}"},
                     { "{{CurrentYear}}", DateTime.Now.Year.ToString()},
             }
         );
@@ -296,16 +320,16 @@ internal class AuthService
             new Dictionary<string, string>
             {
                     { "{{UserName}}", user.UserName!},
-                    { "{{ResetLink}}",$"{origin}/auth/forget-password?email={user.Email}&code={code}"},
+                    { "{{ResetLink}}",$"{origin}/auth/auth/forget-password?email={user.Email}&code={code}"},
                     { "{{CurrentYear}}", DateTime.Now.Year.ToString()},
             }
         );
 
 
         BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync("ahmedyousef0412@gmail.com", "✅ Affection App : Change Password", emailBody));
-       
+
         await Task.CompletedTask;
-       
+
     }
 
     private async Task NotifyAllUsersAsync(ApplicationUser newUser)
@@ -336,11 +360,11 @@ internal class AuthService
 
         }
     }
-  
-    
-    private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user )
+
+
+    private async Task<AuthResponse> GenerateAuthResponseAsync(ApplicationUser user)
     {
-        var photoUrl = user.Photos?.FirstOrDefault(u => u.IsMain)?.Url;
+        var photoUrl =  user.Photos?.FirstOrDefault(u => u.IsMain)?.Url;
         var userRoles = await GetUserRoles(user);
 
         // Generate the JWT token and expiration time
@@ -363,16 +387,16 @@ internal class AuthService
 
         await _userManager.UpdateAsync(user);
 
-        return new AuthResponse(user.Id, user.UserName, user.Email, user.KnowAs, user.Country, user.City, user.Gender.ToString(), user.DateOfBirth,token,expiresIn ,refreshToken ,refreshTokenExpiresOn,photoUrl);
+        return new AuthResponse(user.Id, user.UserName, user.Email, user.KnowAs, user.Country, user.City, user.Gender.ToString(), user.DateOfBirth, token, expiresIn, refreshToken, refreshTokenExpiresOn, photoUrl);
     }
 
-    private async Task<IEnumerable<string>> GetUserRoles(ApplicationUser user )
+    private async Task<IEnumerable<string>> GetUserRoles(ApplicationUser user)
     {
         var userRoles = await _userManager.GetRolesAsync(user);
 
         return (userRoles);
     }
-  
+
     private static string GenerateRefreshToken() => Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
     private void SetRefreshTokenCookie(string refreshToken, DateTime refreshTokenExpiresOn)
     {
@@ -384,7 +408,7 @@ internal class AuthService
             Expires = refreshTokenExpiresOn // Set the expiration date of the cookie
         };
 
-       _httpContext.HttpContext?.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        _httpContext.HttpContext?.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
     }
 
 

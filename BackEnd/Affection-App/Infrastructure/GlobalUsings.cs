@@ -32,5 +32,11 @@ global using Affection.Infrastructure.Helper;
 global using Hangfire;
 global using CloudinaryDotNet.Actions;
 global using CloudinaryDotNet;
-global using Affection.Contract.Photos;
 global using Error = Affection.Domain.Abstraction.Error;
+global using Affection.Contract.Users;
+global using StackExchange.Redis;
+global using Affection.Contract.Common;
+global using Affection.Contract.Members;
+global using Affection.Domain.Abstractions;
+global using Affection.Domain.Enums;
+

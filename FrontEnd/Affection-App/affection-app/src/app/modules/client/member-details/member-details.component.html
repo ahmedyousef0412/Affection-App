@@ -1,0 +1,37 @@
+<div class="profile-container">
+    <div class="profile-header">
+      <img
+        *ngIf="member.mainPhotoUrl; else defaultPhoto"
+        [src]="member.mainPhotoUrl"
+        alt="{{ member.knowAs }}"
+        class="profile-photo"
+      />
+      <ng-template #defaultPhoto>
+        <img src="assets/imgs/user.png" alt="Default" class="profile-photo" />
+      </ng-template>
+      <h2>{{ member.knowAs }}</h2>
+      <p>{{ member.city }}, {{ member.country }}</p>
+    </div>
+  
+    <div class="profile-details">
+      <h3>About me </h3>
+      <p><strong>Looking for:</strong> {{ member.lookingFor }}</p>
+      <p><strong>Introduction:</strong> {{ member.introduction }}</p>
+      <p><strong>Interests:</strong> {{ member.interests }}</p>
+      <p><strong>Email:</strong> {{ member.email }}</p>
+      <p><strong>Gender:</strong> {{ member.gender }}</p>
+      <p><strong>Member since  :</strong> {{ member.createdOn | date : "dd MMM yyyy" }}</p>
+      <p><strong>Last Active:</strong> {{ member.lastActive |amTimeAgo}}</p>
+    </div>
+
+
+   
+
+
+     <div *ngIf="member?.photos?.length > 0" class="profile-actions">
+   
+      <button class="show-photos-btn" [routerLink]="['/client/memberPhotos', member.id]" >Show my photos</button>
+
+      </div> 
+  </div>
+  

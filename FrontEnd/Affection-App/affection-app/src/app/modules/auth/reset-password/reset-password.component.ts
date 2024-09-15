@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { resetPasswordRequest } from '../../../core/models/authentication/resestPasswordRequest';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../../../core/services/authService';
+
 import { NgForm } from '@angular/forms';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -14,6 +15,7 @@ import { NgForm } from '@angular/forms';
 export class ResetPasswordComponent implements OnInit {
 
 
+  authService:AuthService = inject(AuthService);
   credential:resetPasswordRequest = {
     
     email: '',
@@ -22,7 +24,6 @@ export class ResetPasswordComponent implements OnInit {
   }
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
     private toastr: ToastrService,
     private router: Router
   ) {}
@@ -47,7 +48,7 @@ export class ResetPasswordComponent implements OnInit {
       this.authService.resetPassword(request).subscribe({
         next: () => {
           this.toastr.success('Password reset successfully!');
-          this.router.navigate(['/login']);
+          this.router.navigate(['auth/login']);
         },
         error: (err) => {
           this.toastr.error('Error resetting password. Please try again.');

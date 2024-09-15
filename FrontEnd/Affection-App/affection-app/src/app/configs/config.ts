@@ -16,9 +16,22 @@ export abstract class Configurations {
         ResetPassword: 'auth/reset-password',
         GetRefreshToken: 'auth/refresh-token'
     });
-   
+
+    static readonly Account = Object.freeze({
+
+        Profile: 'me',
+        UpdateProfile: 'me/info',
+        ChangePassword: 'me/change-password',
+        UploadPhoto: 'me/upload-photo',
+        ShowPhotos:'me/Photos',
+        DeletePhoto: 'me/delete-photo/{photoId}',
+        SetPhotoMain: 'me/set-photo-main/{photoId}'
+    });
+
     static readonly Clients = Object.freeze({
-        Members: 'members',
+        GetMembers: 'members',
+        GetMember: 'members/{id}',
+        GetMemberPhotos: 'members/photos/{id}',
 
     });
 

@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { loginRequest } from '../../../core/models/authentication/loginRequest';
-import { AuthService } from '../../../core/services/authService';
+
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ErrorHandlingService } from '../../../core/services/error-handling.service';
 import { Error } from '../../../core/models/result.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,14 +16,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class LoginComponent implements OnInit {
 
-
+  authService:AuthService = inject(AuthService);
   credentials: loginRequest = {
     email: '',
     password: ''
   }
  
 
-  constructor(private authService: AuthService,
+  constructor(
      private router: Router,
       private toastr: ToastrService,
       private errorHandlingService: ErrorHandlingService) { }

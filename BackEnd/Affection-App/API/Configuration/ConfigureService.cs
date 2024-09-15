@@ -1,5 +1,9 @@
 ﻿
 
+using Affection.Infrastructure.Helper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
+
 namespace Affection.API.Configuration;
 
 public static class ConfigureService
@@ -8,7 +12,10 @@ public static class ConfigureService
     public static IServiceCollection AffectionApiDependeciesService(this IServiceCollection services  ,IConfiguration configuration)
     {
 
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            options.Filters.Add<LogUserActivity>();
+        });
 
         services.AddSwaggerConfig().AddMapsterConfig();
         services.ApplyCORS(configuration);
@@ -50,7 +57,36 @@ public static class ConfigureService
     {
 
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+
+
+            // Define the security scheme
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Please add your token",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = JwtBearerDefaults.AuthenticationScheme
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
 
         return services;
     }
