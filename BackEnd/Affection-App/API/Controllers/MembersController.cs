@@ -1,13 +1,13 @@
 ﻿
-using Affection.Contract.Common;
-using Affection.Infrastructure.Implementation;
-
 
 namespace Affection.API.Controllers;
+
 
 [Route("api/[controller]")]
 [ApiController]
 [Authorize]
+
+
 public class MembersController(IMemberService memberService , IPhotoService photoService ) : ControllerBase
 {
     private readonly IMemberService _memberService = memberService;

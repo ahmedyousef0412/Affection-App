@@ -1,10 +1,9 @@
 ﻿
 
-namespace Affection.Application.Interfaces
+namespace Affection.Application.Interfaces;
+
+public interface IImageUploadService
 {
-    public interface IImageUploadService
-    {
-        Task<ImageUploadResult> UploadImageAsync(IFormFile file);
-        Task<DeletionResult> DeleteImageAsync(string publicId);
-    }
+    Task<ImageUploadResult> UploadImageAsync(IFormFile file);
+    Task<DeletionResult> DeleteImageAsync(string publicId);
 }

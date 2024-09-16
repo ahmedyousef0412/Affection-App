@@ -1,5 +1,4 @@
 ﻿
-using Affection.Contract.Photos;
 
 namespace Affection.Application.Interfaces;
 public interface IPhotoService
