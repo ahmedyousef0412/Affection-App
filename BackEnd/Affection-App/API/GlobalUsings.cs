@@ -23,6 +23,8 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.AspNetCore.Authorization;
 global using Affection.Contract.Users;
 global using Affection.Contract.Members;
-
-
-
+global using Affection.Contract.Common;
+global using Affection.Infrastructure.Helper;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.OpenApi.Models;
+global using System.Security.Claims;

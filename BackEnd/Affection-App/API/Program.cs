@@ -1,8 +1,14 @@
 
 
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//Serilog
+builder.Host.UseSerilog((context, confguration) =>
+              confguration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AffectionApiDependeciesService(builder.Configuration);
 
@@ -18,6 +24,7 @@ if (app.Environment.IsDevelopment())
 }
 
 
+app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseHangfireDashboard("/jobs", new DashboardOptions

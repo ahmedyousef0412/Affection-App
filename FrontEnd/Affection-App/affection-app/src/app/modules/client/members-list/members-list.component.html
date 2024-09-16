@@ -1,76 +1,61 @@
 <div class="text-center mt-3">
-    <h2>Your matches - {{members?.length}} found</h2>
+    <h2>Your matches - {{ members?.length }} found</h2>
 </div>
 
 <div class="container mt-5">
     <form #form="ngForm" class="d-flex mb-3" (ngSubmit)="loadMembers()" autocomplete="off">
         <div class="d-flex mx-2">
             <label class="col-form-label me-2">Age from: </label>
-            <input type="number" class="form-control ml-1" style="width: 70px; height: 40px;" name="minAge" 
-                [(ngModel)]="userParams.minAge">
+            <input type="number" class="form-control ml-1" style="width: 70px; height: 40px" name="minAge"
+                [(ngModel)]="userParams.minAge" />
         </div>
 
         <div class="d-flex px-2">
             <label class="col-form-label me-2">Age to: </label>
-            <input type="number" class="form-control ml-1" style="width: 70px;height: 40px;" name="maxAge" 
-                [(ngModel)]="userParams.maxAge">
+            <input type="number" class="form-control ml-1" style="width: 70px; height: 40px" name="maxAge"
+                [(ngModel)]="userParams.maxAge" />
         </div>
 
         <div class="d-flex px-2">
             <label class="col-form-label me-2">Show: </label>
-            <select name="gender" style="width: 130px;height: 40px;" [(ngModel)]="userParams.gender" class="form-control ml-1">
+            <select name="gender" style="width: 130px; height: 40px" [(ngModel)]="userParams.gender"
+                class="form-control ml-1">
                 <option *ngFor="let gender of genderList" [value]="gender.value">
-                    {{gender.display}}
+                    {{ gender.display }}
                 </option>
             </select>
         </div>
-       
-        <button class="btn btn-primary ms-1 " id="applyFilter" type="submit">Apply Filters</button>
-        <button (click)="resetFilters()"  id="resetFilters" class="btn btn-info ms-1" type="submit">Reset Filters</button>
-         <div class="col">
+
+        <button class="btn btn-primary ms-1" id="applyFilter" type="submit">
+            Apply Filters
+        </button>
+        <button (click)="resetFilters()" id="resetFilters" class="btn btn-info ms-1" type="submit">
+            Reset Filters
+        </button>
+        <div class="col">
             <div id="sorting" class="btn-group float-right grid grid-cols-2">
-                <button type="button" 
-                class=" btn btn-primary ms-1" 
-                name="orderBy"
-                 [(ngModel)]="userParams.orderBy"
-                 (click)="loadMembers()"
-                 btnRadio="lastActive">
-                 Last Active</button>
-       
-       
-                 <button type="button" 
-                 class=" btn btn-primary" 
-                 name="created"
-                  [(ngModel)]="userParams.orderBy"
-                  (click)="loadMembers()"
-                  btnRadio="created"> Newest Member</button>
-               </div>
-         </div>
-       
+                <button type="button" class="btn btn-primary ms-1" name="orderBy" [(ngModel)]="userParams.orderBy"
+                    (click)="loadMembers()" btnRadio="lastActive">
+                    Last Active
+                </button>
+
+                <button type="button" class="btn btn-outline-primary ms-1" name="created"
+                    [(ngModel)]="userParams.orderBy" (click)="loadMembers()" btnRadio="created">
+                    Newest Member
+                </button>
+            </div>
+        </div>
     </form>
 </div>
 
-
-
-
 <div class="row">
-    <div *ngFor="let user of members " class="col-2">
-        
-                 
-       <app-member-card [member]="user"></app-member-card>
-
-       
+    <div *ngFor="let user of members" class="col-2">
+        <app-member-card [member]="user"></app-member-card>
     </div>
-
-
 </div>
-<br>
+<br />
 
 <div *ngIf="pagination">
-    <app-pagination 
-    [pagination]="pagination" 
-    (pageChanged)="pageChanged($event)">
-
+    <app-pagination [pagination]="pagination" (pageChanged)="pageChanged($event)">
     </app-pagination>
- </div>
-  
+</div>

@@ -6,3 +6,5 @@ global using Microsoft.AspNetCore.Http;
 global using Affection.Contract.Common;
 global using Affection.Contract.Members;
 global using Affection.Domain.Abstractions;
+global using Affection.Contract.Users;
+global using Affection.Contract.Photos;

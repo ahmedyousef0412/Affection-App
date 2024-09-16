@@ -1,5 +1,4 @@
 ﻿
-using Affection.Contract.Users;
 
 namespace Affection.Application.Interfaces;
 public interface IUserService

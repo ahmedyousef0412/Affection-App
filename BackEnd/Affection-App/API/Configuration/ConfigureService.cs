@@ -1,9 +1,5 @@
 ﻿
 
-using Affection.Infrastructure.Helper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
-
 namespace Affection.API.Configuration;
 
 public static class ConfigureService
@@ -16,6 +12,8 @@ public static class ConfigureService
         {
             options.Filters.Add<LogUserActivity>();
         });
+
+
 
         services.AddSwaggerConfig().AddMapsterConfig();
         services.ApplyCORS(configuration);
